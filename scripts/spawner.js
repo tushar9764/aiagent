@@ -65,6 +65,7 @@ async function main() {
       };
 
       await createTicket({ baseUrl: ZOHO_BASE_URL, token, orgId: ZOHO_ORG_ID, ticket: ticketPayload });
+      
       console.log(`[SPAWNED] ${subject}`);
     } catch (e) {
       console.error("[SPAWNER ERR]", e?.response?.data || e?.message || e);

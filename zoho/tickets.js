@@ -1,5 +1,6 @@
 // zoho/tickets.js
 import axios from "axios";
+import nodemailer  from "nodemailer";
 
 export function zohoHeaders(token, orgId) {
   return { Authorization: `Zoho-oauthtoken ${token}`, orgId };
@@ -48,3 +49,49 @@ export async function createTicket({ baseUrl, token, orgId, ticket }) {
   );
 }
 
+export async function sendEmail({receiverEmail, ai}){
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.office365.com",
+      port: 587,  //SMTP 
+      secure: false, // Use STARTTLS
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASS,
+      },
+      tls: {
+        rejectUnauthorized: false, // <- sometimes needed for corporate Outlook
+      },
+    });
+
+    const mailOptions = {
+      from: `"ZOHO Agent" <${process.env.EMAIL}>`,
+      to: receiverEmail,
+      subject: "Ticket Updated On Behalf Of You",
+      html: `
+        <p>Dear Customer,</p>
+
+<p>This is to inform you that your open ticket has been updated on your behalf by our Zoho AI Agent.</p>
+
+<p>Details of the update:</p>
+<ul>
+  <li><strong>Summary:</strong> ${ai.summary}</li>
+  <li><strong>Category:</strong> ${ai.category}</li>
+  <li><strong>Priority:</strong> ${ai.priority} (${ai.priority_reason ?? "n/a"})</li>
+  <li><strong>Tags:</strong> ${ai.tags?.join(", ") ?? "none"}</li>
+</ul>
+
+<p>If you have any questions or need further assistance, please feel free to reach out.</p>
+
+<p>Best regards,<br>
+The Support Team (Zoho AI Agent)</p>
+
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+  } catch (err) {
+    console.error("Error sending email:", err);
+    throw err;
+  }
+}
