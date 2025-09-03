@@ -1,0 +1,47 @@
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
+import Ticket from "../models/Tickets.js"; // adjust path if needed
+
+dotenv.config(); // load .env
+
+// MongoDB connection
+async function connectDB() {
+  try {
+    await mongoose.connect("mongodb+srv://tusharcsdev24_db_user:dangertonoc@aiagent.15c2nqu.mongodb.net/?retryWrites=true&w=majority&appName=AiAgent", {
+      dbName: "agent_data",
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("✅ Connected to MongoDB");
+  } catch (err) {
+    console.error("❌ DB connection failed:", err);
+    process.exit(1);
+  }
+}
+
+// Mock ticket generator
+async function createFakeTicket() {
+  const fakeTicket = new Ticket({
+    ticketId: uuidv4(),
+    site: "Bangalore DC",
+    isp: "JioFiber",
+    category: "Network Issue",
+    subject: "Packet loss detected",
+    signature: "site-bangalore-jio-network-123",
+  });
+
+  try {
+    const saved = await fakeTicket.save();
+    console.log("🎉 Fake ticket created:", saved);
+  } catch (err) {
+    console.error("❌ Error creating ticket:", err.message);
+  } finally {
+    mongoose.connection.close();
+  }
+}
+
+(async () => {
+  await connectDB();
+  await createFakeTicket();
+})();

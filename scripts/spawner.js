@@ -54,15 +54,7 @@ async function main() {
       const ts = new Date().toISOString().replace(/[:.]/g, "-");
 
       // NOTE: Some orgs require a known contact/email. If you get 422, set email to your own Zoho Desk user email.
-      const ticketPayload = {
-        subject,
-        departmentId,
-        description: `Auto-generated test ticket at ${ts}\nSubject: ${subject}`,
-        status: "Open",
-        priority: "Low",
-        // If you get 422 on create, replace this with your real email (one that exists in Desk)
-        contactId: CONTACT_ID
-      };
+      0
 
       await createTicket({ baseUrl: ZOHO_BASE_URL, token, orgId: ZOHO_ORG_ID, ticket: ticketPayload });
       

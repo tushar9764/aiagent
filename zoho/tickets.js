@@ -24,7 +24,7 @@ export async function addPrivateNote({ baseUrl, token, orgId, ticketId, text }) 
   );
 }
 
-// ✅ Update priority (Zoho expects PUT on /tickets/{id})
+// Update priority (Zoho expects PUT on /tickets/{id})
 export async function updatePriority({ baseUrl, token, orgId, ticketId, priority }) {
   await axios.put(
     `${baseUrl}/tickets/${ticketId}`,
@@ -95,3 +95,4 @@ The Support Team (Zoho AI Agent)</p>
     throw err;
   }
 }
+

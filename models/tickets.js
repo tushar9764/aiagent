@@ -1,38 +1,42 @@
-const mongoose = require("mongoose");
+// models/Ticket.js
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
 const TicketSchema = new mongoose.Schema({
   ticketId: {
     type: String,
-    required: true, // Zoho ticket id
-    unique: true
+    required: true,
+    unique: true,
   },
   site: {
-    type: String
+    type: String,
   },
   isp: {
-    type: String
-
+    type: String,
   },
   category: {
-    type: String
+    type: String,
   },
   subject: {
-    type: String
+    type: String,
   },
   createdAt: {
     type: Date,
     required: true,
-    default: Date.now
+    default: Date.now,
   },
   signature: {
     type: String,
-    required: true 
-  }
+    required: true,
+  },
 }, {
-  timestamps: true // adds createdAt + updatedAt automatically
+  timestamps: true,
 });
 
 // compound index for faster recurring detection
-TicketSchema.index({ signature: 1, createdAt: 1 });
+TicketSchema.index({ createdAt: 1, signature: 1 });
 
-module.exports = mongoose.model("Ticket", TicketSchema);
+const Ticket = mongoose.model("Ticket", TicketSchema);
+
+export default Ticket;
