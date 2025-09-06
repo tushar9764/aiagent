@@ -1,4 +1,4 @@
-const Ticket = require("../models/tickets");
+import Ticket from "../models/Tickets.js";
 
 // Save or update a ticket
 async function saveTicket(rawTicket) {

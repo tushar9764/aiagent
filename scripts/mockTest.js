@@ -8,7 +8,8 @@ dotenv.config(); // load .env
 // MongoDB connection
 async function connectDB() {
   try {
-    await mongoose.connect("mongodb+srv://tusharcsdev24_db_user:dangertonoc@aiagent.15c2nqu.mongodb.net/?retryWrites=true&w=majority&appName=AiAgent", {
+    const uri = process.env.MONGODB_URI;
+    await mongoose.connect(uri, {
       dbName: "agent_data",
       useNewUrlParser: true,
       useUnifiedTopology: true,
