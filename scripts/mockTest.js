@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import Ticket from "../models/Tickets.js"; // adjust path if needed
 
-dotenv.config(); // load .env
+dotenv.config(); // load .env   //run the file from directory where the .env is present
 
 // MongoDB connection
 async function connectDB() {
