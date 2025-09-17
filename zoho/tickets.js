@@ -15,6 +15,16 @@ export async function listTickets({ baseUrl, token, orgId, limit = 10, status })
   return res.data?.data || res.data || [];
 }
 
+export async function getTicket({ baseUrl, token, orgId, ticketId }) {
+  const res = await axios.get(`${baseUrl}/tickets/${ticketId}`, {
+    headers: zohoHeaders(token, orgId),
+  });
+
+  // the single ticket endpoint returns an object, not an array
+  return res.data || {};
+}
+
+
 // Add a PRIVATE note
 export async function addPrivateNote({ baseUrl, token, orgId, ticketId, text }) {
   await axios.post(

@@ -2,6 +2,7 @@
 import { getAccessToken } from "../zoho/auth.js";
 import {
   listTickets,
+  getTicket,
   addPrivateNote,
   updatePriority,
   sendEmail,
@@ -45,7 +46,6 @@ export function startWorker(env) {
 
       // 2) fetch a small batch of active tickets
       const tickets = await listTickets({
-        //listTickets
         baseUrl: env.ZOHO_BASE_URL,
         token,
         orgId: env.ZOHO_ORG_ID,
@@ -58,6 +58,14 @@ export function startWorker(env) {
       // 3) triage + update each ticket (skip old ones if we’ve run before)
       const now = Date.now();
       for (const t of tickets) {
+        const singleTicket= await getTicket({
+          baseUrl: env.ZOHO_BASE_URL,
+          token,
+          orgId: env.ZOHO_ORG_ID,
+          ticketId: t.id,
+        })
+  
+        //console.log(`ticket id: ${singleTicket.id}, ticket description: ${singleTicket.description}, ticket subject: ${singleTicket.subject}`);
         const ticketId = t.id;
         if (!ticketId || processedThisRun.has(ticketId)) continue;
 
@@ -69,23 +77,23 @@ export function startWorker(env) {
         try {
           // 3a) AI triage (Claude or heuristic)
           const ai = await triage({
-            subject: t.subject || "",
-            description: t.description || "",
-            customer_name: t?.contact?.firstName || t?.email || "Customer",
+            subject: singleTicket.subject || "",
+            description: singleTicket.description || "",
+            customer_name: singleTicket?.contact?.firstName || t?.email || "Customer",
             openaiKey: env.OPENAI_API_KEY, // ignored if using Claude; triage handles fallback
           });
 
           console.log(`[db] upserting ${ticketId}…`);
           const ticketSaved= await upsertTicketWithVectors({
             //add this here so that even if the external side-effects (like email) fail the ticket is saved in db.
-            ticketId: t.id,
-            subject: t.subject || "",
-            description: t.description || "",
-            site: t.accountName || t?.contact?.accountName || "",
-            isp: t?.cf_isp || "",
-            category: ai.category,
-            status: t.status || "Open",
-            priority: ai.priority,
+          ticketId,
+          subject: singleTicket.subject || "",
+          description: singleTicket.description || "",
+          site: singleTicket.accountName || singleTicket?.contact?.accountName || "",
+          isp: singleTicket?.cf_isp || "",
+          category: ai.category,
+          status: singleTicket.status || "Open",
+          priority: ai.priority,
           });
           console.log(`[db] saved ${ticketId}`, ticketSaved);
 
