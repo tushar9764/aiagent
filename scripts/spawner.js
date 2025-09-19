@@ -20,6 +20,7 @@ const {
   // Optional: bias the generator
   SPAWN_SITES, // e.g., "Pune,Chennai,Bengaluru,Hyderabad,Mumbai"
   SPAWN_ISPS, // e.g., "Airtel,BSNL,Jio,Tata,ACT"
+  ANTHROPIC_ACCOUNT_URI,
 } = process.env;
 
 const CONTACT_ID = SPAWN_CONTACT_ID || "216183000000321001";
@@ -61,7 +62,7 @@ const STATIC_SUBJECTS = [
 ];
 
 function pick(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+  return arr[Math.floor(Math.random() * arr.length)];   //range [0, 1) so no worries of runnning out of bound
 }
 
 function clampPriority(severity) {
@@ -77,9 +78,9 @@ function clampPriority(severity) {
 
 // =============== CLAUDE PROMPT ===============
 function buildClaudeUserPrompt() {
-  const sitePool = SPAWN_SITES?.split(",")
-    .map((s) => s.trim())
-    .filter(Boolean) || [
+  const sitePool = SPAWN_SITES?.split(",")  // either an array or undefined
+    .map((s) => s.trim())  // runs only if the thing before is an array
+    .filter(Boolean) || [  
     "Pune",
     "Chennai",
     "Bengaluru",
@@ -149,7 +150,7 @@ Now generate ONE fresh incident as strict JSON.
 
 // =============== CLAUDE CALL ===============
 async function generateIncidentWithClaude({ maxRetries = 2 } = {}) {
-  const url = "https://api.anthropic.com/v1/messages";
+  const url = ANTHROPIC_ACCOUNT_URI;
   const headers = {
     "content-type": "application/json",
     "x-api-key": ANTHROPIC_API_KEY,
@@ -258,6 +259,7 @@ async function main() {
     token,
     orgId: ZOHO_ORG_ID,
   });
+  //console.log("department of whatever: ",depts);
   if (!depts?.length) throw new Error("No departments found in Zoho Desk.");
   const departmentId = depts[0].id;
 

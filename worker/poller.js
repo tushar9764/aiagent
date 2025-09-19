@@ -16,7 +16,7 @@ mongoose.set("strictQuery", true);
 mongoose.set("bufferCommands", false);
 
 let mongoReady = false;
-async function ensureMongo(uri) {
+export async function ensureMongo(uri) {
   if (mongoReady) return;
   await mongoose.connect(uri, { serverSelectionTimeoutMS: 10000 });
   mongoReady = true;
