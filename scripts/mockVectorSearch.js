@@ -35,8 +35,8 @@ const TOP_K = Number(args.k ?? 5);
 const NUM_CANDIDATES = Number(args.candidates ?? 100);
 
 // -------------------- db connect --------------------
-mongoose.set("strictQuery", true);
-mongoose.set("bufferCommands", false);
+mongoose.set("strictQuery", true);   //avoid made up fields in document
+mongoose.set("bufferCommands", false);  // if true helps us query data before connecting to db, using queue
 
 async function connectOnce() {
   const uri = process.env.MONGODB_URI;
@@ -85,7 +85,9 @@ function pretty(row) {
 
   // 3) try Atlas Vector Search first
   try {
-    const filter = {}; // optional: tighten by category/site if you want
+    console.log("anchor.site =", JSON.stringify(anchor.site));
+
+    const filter = {site: anchor.site}; // optional: tighten by category/site if you want
     const pipe = [
       {
         $vectorSearch: {
