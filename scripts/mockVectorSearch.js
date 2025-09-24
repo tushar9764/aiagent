@@ -85,9 +85,17 @@ function pretty(row) {
 
   // 3) try Atlas Vector Search first
   try {
-    console.log("anchor.site =", JSON.stringify(anchor.site));
+    //console.log("anchor.site =", JSON.stringify(anchor.site));
 
-    const filter = {site: anchor.site}; // optional: tighten by category/site if you want
+    const days = 30; // change to 31 if you want a wider month window
+    const ms = 24 * 60 * 60 * 1000;
+    const windowStart = new Date(anchor.updatedAt.getTime() - days * ms);
+    const windowEnd   = new Date(anchor.updatedAt.getTime() + days * ms);
+
+    const filter = {
+      site: anchor.site,
+      updatedAt: { $gte: windowStart, $lte: windowEnd },
+    };
     const pipe = [
       {
         $vectorSearch: {

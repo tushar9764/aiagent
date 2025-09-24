@@ -104,6 +104,7 @@ function buildClaudeUserPrompt() {
   // We give Claude constraints + examples and ask for strict JSON.
   return `
 You are generating realistic NOC incident tickets for a helpdesk (Zoho-like).
+do not generate only incidents of same type , keep variety like BGP, DNS,ISP, Power Cut, all ot it.
 
 Return STRICT JSON ONLY (no prose). Fields:
 {
@@ -275,6 +276,7 @@ async function main() {
       if (ANTHROPIC_API_KEY) {
         try {
           incident = await generateIncidentWithClaude();
+          //console.log("claud generated issue:",incident);
         } catch (e) {
           console.warn(
             "[claude] generation failed, falling back to static:",
