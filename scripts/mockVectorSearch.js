@@ -20,13 +20,15 @@ const __dirname = path.dirname(__filename);
 
 const [, , ticketIdArg, ...rest] = process.argv;
 if (!ticketIdArg) {
-  console.error("Usage: node scripts/mockVectorSearch.js <ticketId> [--k=5] [--candidates=100]");
+  console.error(
+    "Usage: node scripts/mockVectorSearch.js <ticketId> [--k=5] [--candidates=100]"
+  );
   process.exit(1);
 }
 const args = Object.fromEntries(
   rest
-    .filter(s => s.startsWith("--"))
-    .map(s => {
+    .filter((s) => s.startsWith("--"))
+    .map((s) => {
       const [k, v] = s.replace(/^--/, "").split("=");
       return [k, v ?? "true"];
     })
@@ -35,8 +37,8 @@ const TOP_K = Number(args.k ?? 5);
 const NUM_CANDIDATES = Number(args.candidates ?? 100);
 
 // -------------------- db connect --------------------
-mongoose.set("strictQuery", true);   //avoid made up fields in document
-mongoose.set("bufferCommands", false);  // if true helps us query data before connecting to db, using queue
+mongoose.set("strictQuery", true); //avoid made up fields in document
+mongoose.set("bufferCommands", false); // if true helps us query data before connecting to db, using queue
 
 async function connectOnce() {
   const uri = process.env.MONGODB_URI;
@@ -48,10 +50,16 @@ async function connectOnce() {
 
 // -------------------- helpers --------------------
 function cosine(a, b) {
-  let dot = 0, na = 0, nb = 0;
+  let dot = 0,
+    na = 0,
+    nb = 0;
   const L = Math.min(a?.length || 0, b?.length || 0);
-  for (let i = 0; i < L; i++) { dot += a[i]*b[i]; na += a[i]*a[i]; nb += b[i]*b[i]; }
-  return (na && nb) ? dot / (Math.sqrt(na) * Math.sqrt(nb)) : 0;
+  for (let i = 0; i < L; i++) {
+    dot += a[i] * b[i];
+    na += a[i] * a[i];
+    nb += b[i] * b[i];
+  }
+  return na && nb ? dot / (Math.sqrt(na) * Math.sqrt(nb)) : 0;
 }
 
 function pretty(row) {
@@ -90,7 +98,7 @@ function pretty(row) {
     const days = 30; // change to 31 if you want a wider month window
     const ms = 24 * 60 * 60 * 1000;
     const windowStart = new Date(anchor.updatedAt.getTime() - days * ms);
-    const windowEnd   = new Date(anchor.updatedAt.getTime() + days * ms);
+    const windowEnd = new Date(anchor.updatedAt.getTime() + days * ms);
 
     const filter = {
       site: anchor.site,
@@ -120,7 +128,9 @@ function pretty(row) {
 
     let hits = await Ticket.aggregate(pipe);
     // remove the anchor ticket if it appears
-    hits = hits.filter(h => String(h.ticketId) !== String(anchor.ticketId)).slice(0, TOP_K);
+    hits = hits
+      .filter((h) => String(h.ticketId) !== String(anchor.ticketId))
+      .slice(0, TOP_K);
 
     console.log("\n=== Vector Search (Atlas) ===");
     console.table(hits.map(pretty));
@@ -128,7 +138,9 @@ function pretty(row) {
   } catch (e) {
     // If vector search isn't enabled (free tier or index missing), we fall back.
     const msg = e?.message || String(e);
-    console.warn(`[warn] $vectorSearch failed (${msg}). Falling back to local cosine…`);
+    console.warn(
+      `[warn] $vectorSearch failed (${msg}). Falling back to local cosine…`
+    );
   }
 
   // 4) fallback: local cosine over recent candidates
@@ -139,7 +151,7 @@ function pretty(row) {
     embedding: { $exists: true, $type: "array", $ne: [] },
   })
     .select({ ticketId: 1, subject: 1, category: 1, site: 1, embedding: 1 })
-  .lean();
+    .lean();
 
   const scored = [];
   for (const c of candidates) {
@@ -152,7 +164,7 @@ function pretty(row) {
   console.log("\n=== Local Cosine (fallback) ===");
   console.table(top.map(pretty));
   process.exit(0);
-})().catch(err => {
+})().catch((err) => {
   console.error("[fatal]", err?.message || err);
   process.exit(1);
 });
