@@ -124,6 +124,11 @@ function pretty(row) {
           similarity: { $meta: "vectorSearchScore" },
         },
       },
+      {
+        $match: {
+          similarity: { $gte: 0.9 },
+        },
+      },
     ];
 
     let hits = await Ticket.aggregate(pipe);
@@ -156,7 +161,9 @@ function pretty(row) {
   const scored = [];
   for (const c of candidates) {
     const s = cosine(queryVector, c.embedding);
-    scored.push({ ...c, _sim: s });
+    if (s >= 0.9) {
+      scored.push({ ...c, _sim: s });
+    }
   }
   scored.sort((a, b) => b._sim - a._sim);
   const top = scored.slice(0, TOP_K);
