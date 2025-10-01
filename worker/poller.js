@@ -11,6 +11,7 @@ import { triage } from "../ai/triage.js";
 import { POLL_INTERVAL_MS } from "../config/settings.js";
 import { upsertTicketWithVectors } from "../dbOperations/ticketVectors.js";
 import mongoose from "mongoose";
+import { vectorSearch } from "../scripts/vectorSearchFunction.js";
 
 mongoose.set("strictQuery", true);
 mongoose.set("bufferCommands", false);
@@ -84,6 +85,7 @@ export function startWorker(env) {
           });
 
           console.log(`[db] upserting ${ticketId}…`);
+          console.log("single ticket shape:",singleTicket);
           const ticketSaved= await upsertTicketWithVectors({
             //add this here so that even if the external side-effects (like email) fail the ticket is saved in db.
           ticketId,
@@ -96,6 +98,9 @@ export function startWorker(env) {
           priority: ai.priority,
           });
           console.log(`[db] saved ${ticketId}`, ticketSaved);
+          const similarTickets= await vectorSearch(ticketId, 10, 100);
+          // const similarTicketsId=similarTickets.map((m)=>m.ticketId);
+          // console.log("similar tickets ids:", similarTicketsId);
 
           // 3b) build private note
           const note = `Summary: ${ai.summary}

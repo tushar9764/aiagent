@@ -1,0 +1,77 @@
+single ticket shape: {
+  modifiedTime: '2025-10-01T16:30:41.000Z',
+  subCategory: null,
+  statusType: 'Open',
+  subject: 'BGP Route Flap on Mumbai Internet Edge',
+  dueDate: '2025-09-24T22:16:13.000Z',
+  departmentId: '216183000000010772',
+  channel: 'Phone',
+  onholdTime: null,
+  language: null,
+  source: {
+    appName: null,
+    extId: null,
+    permalink: null,
+    type: 'SYSTEM',
+    uuid: null,
+    appPhotoURL: null
+  },
+  resolution: null,
+  sharedDepartments: [],
+  closedTime: null,
+  approvalCount: '0',
+  isOverDue: true,
+  isTrashed: false,
+  createdTime: '2025-09-24T16:16:14.000Z',
+  id: '216183000000539292',
+  isResponseOverdue: false,
+  customerResponseTime: '2025-09-24T16:16:13.000Z',
+  productId: null,
+  contactId: '216183000000321001',
+  threadCount: '1',
+  secondaryContacts: [],
+  priority: 'High',
+  classification: null,
+  commentCount: '18',
+  taskCount: '0',
+  accountId: null,
+  phone: null,
+  webUrl: 'https://desk.zoho.in/support/mysupportagent/ShowHomePage.do#Cases/dv/216183000000539292',
+  isSpam: false,
+  status: 'Open',
+  entitySkills: [],
+  ticketNumber: '248',
+  sentiment: null,
+  customFields: {},
+  isArchived: false,
+  description: 'Multiple BGP route withdrawals detected on core router affecting internet connectivity. Observing 40% route instability in AS path. Potential upstream peering issue causing route advertisements to destabilize. Immediate investigation required to prevent potential service disruption.\n' +
+    '—\n' +
+    'Category: BGP\n' +
+    'Site: Mumbai\n' +
+    'ISP: Jio\n' +
+    'Severity: High\n' +
+    'Device: EDGE-RTR-03, Interface: xe-0/0/2\n' +
+    'SrcIP: 103.25.178.45, DstIP: 192.168.22.11\n' +
+    'Circuit: JIO-MUM-45672, ObservedAt: 2024-03-22T11:37:22+05:30\n' +
+    'Auto-spawned at 2025-09-24T16-16-10-130Z by spawner_claude.js',
+  timeEntryCount: '0',
+  channelRelatedInfo: null,
+  responseDueDate: null,
+  isDeleted: false,
+  modifiedBy: '216183000000064001',
+  followerCount: '0',
+  email: null,
+  layoutDetails: { id: '216183000000011350', layoutName: 'MySupportAgent' },
+  channelCode: null,
+  isFollowing: false,
+  cf: {},
+  slaId: '216183000000011314',
+  layoutId: '216183000000011350',
+  assigneeId: null,
+  createdBy: '216183000000064001',
+  teamId: null,
+  tagCount: '0',
+  attachmentCount: '0',
+  isEscalated: false,
+  category: null
+}
