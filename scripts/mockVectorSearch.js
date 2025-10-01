@@ -109,7 +109,7 @@ function pretty(row) {
         $vectorSearch: {
           index: "default",
           path: "embedding",
-          queryVector,
+          queryVector: queryVector,
           numCandidates: NUM_CANDIDATES,
           limit: TOP_K + 1, // +1 so we can drop the anchor itself
           filter,
