@@ -20,7 +20,7 @@ import spacy
 nlp = spacy.load("scripts/output_model")
 
 # Example text
-text = """Ticket: packet drop detected for Fortis Healthcare in Koramangala, Bengaluru"""
+text = """Ticket: Users in the Bengaluru office are experiencing intermittent issues with DNS resolution. Queries to internal and external domains are timing out or returning incorrect IP addresses. Troubleshooting indicates a possible issue with the DNS servers or the network connectivity to them."""
 
 # Process the text
 doc = nlp(text)

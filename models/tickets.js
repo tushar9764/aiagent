@@ -5,7 +5,9 @@ const TicketSchema = new mongoose.Schema(
     ticketId: { type: String, required: true, unique: true },
 
     // raw fields from source
-    site: String,
+    client: String,
+    location:String,
+    issue: String,
     isp: String,
     category: String,
     subject: String,

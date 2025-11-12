@@ -1,5 +1,7 @@
 // worker/poller.js
 import { getAccessToken } from "../zoho/auth.js";
+import { getEntities } from "../utils/nerApi.js";
+
 import {
   listTickets,
   getTicket,
@@ -86,8 +88,11 @@ export function startWorker(env) {
 
           console.log(`[db] upserting ${ticketId}…`);
           console.log("single ticket shape:",singleTicket);
-          const ticketSaved= await upsertTicketWithVectors({
-            //add this here so that even if the external side-effects (like email) fail the ticket is saved in db.
+          const descriptionForNer=singleTicket.description;
+          //here make a api call
+          const apiReturned = await getEntities(descriptionForNer);
+          console.log("---------------------->>", apiReturned);
+          const ticketSaved= await upsertTicketWithVectors({     //add this here so that even if the external side-effects (like email) fail the ticket is saved in db.
           ticketId,
           subject: singleTicket.subject || "",
           description: singleTicket.description || "",
