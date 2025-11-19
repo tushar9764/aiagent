@@ -5,15 +5,17 @@ const TicketSchema = new mongoose.Schema(
     ticketId: { type: String, required: true, unique: true },
 
     // raw fields from source
-    client: String,
-    location:String,
-    issue: String,
-    isp: String,
+    
     category: String,
     subject: String,
     description: String,   // ← add this if you have it
     status: String,        // e.g. "open", "closed"
     priority: String,      // e.g. "low", "high"
+
+    client: { type: String },
+    location:{ type: String},
+    issue: { type: String},
+    isp: { type: String },
 
     // normalized text used for hashing & embedding (subject + description, cleaned)
     normalizedText: { type: String, index: false },

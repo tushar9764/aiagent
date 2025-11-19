@@ -6,7 +6,7 @@ import { embed } from "../ai/embeddings.js";
 
 export async function upsertTicketWithVectors({
   ticketId, subject = "", description = "", site = "", isp = "",
-  category = "", status = "Open", priority = ""
+  category = "", status = "Open", priority = "",client="",location="",issue=""
 }) {
 
   console.log("ticket upload to db function summoned");
@@ -19,7 +19,7 @@ export async function upsertTicketWithVectors({
     {
       $set: {
         ticketId: String(ticketId),
-        site, isp, category, subject, description, status, priority,
+        site, isp, category, subject, description, status, priority,client,location,issue,
         normalizedText, signature, embedding,
         embeddingModel: "all-MiniLM-L6-v2",
         embeddingDim: embedding.length,

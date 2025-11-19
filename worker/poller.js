@@ -91,9 +91,16 @@ export function startWorker(env) {
           const descriptionForNer=singleTicket.description;
           //here make a api call
           const apiReturned = await getEntities(descriptionForNer);
+          //made a api call here
           console.log("---------------------->>", apiReturned);
+          console.log("client",apiReturned.client)
           const ticketSaved= await upsertTicketWithVectors({     //add this here so that even if the external side-effects (like email) fail the ticket is saved in db.
+                                                                // you can use try catch bro that way nothing fails
+                                                                //btw upsertTicketWithVector is a function we defined
           ticketId,
+          client: apiReturned.client || "",
+          location: apiReturned.location || "",
+          issue: apiReturned.issue|| "",
           subject: singleTicket.subject || "",
           description: singleTicket.description || "",
           site: singleTicket.accountName || singleTicket?.contact?.accountName || "",
@@ -104,6 +111,7 @@ export function startWorker(env) {
           });
           console.log(`[db] saved ${ticketId}`, ticketSaved);
           const similarTickets= await vectorSearch(ticketId, 10, 100);
+          
           // const similarTicketsId=similarTickets.map((m)=>m.ticketId);
           // console.log("similar tickets ids:", similarTicketsId);
 
