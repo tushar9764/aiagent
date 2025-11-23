@@ -143,7 +143,7 @@ export function startWorker(env) {
           });
 
           processedThisRun.add(ticketId);
-          await sendEmail({ receiverEmail: "tushar.pd@aquaairx.com", ai: ai });
+          await sendEmail({ receiverEmail: "tushar.pd@aquaairx.com", ai: ai, similarTicketObject: similarTickets, answeredTicketId:ticketId });
           console.log(`[OK] ${ticketId} → ${ai.category}/${ai.priority}`);
         } catch (innerErr) {
           const msg = innerErr?.response?.data || innerErr?.message || innerErr;

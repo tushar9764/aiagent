@@ -59,7 +59,7 @@ export async function createTicket({ baseUrl, token, orgId, ticket }) {
   );
 }
 
-export async function sendEmail({receiverEmail, ai}){
+export async function sendEmail({receiverEmail, ai,answeredTicketId, similarTicketObject}){
   try {
     const transporter = nodemailer.createTransport({
       host: "smtp.office365.com",
@@ -78,25 +78,40 @@ export async function sendEmail({receiverEmail, ai}){
       from: `"ZOHO Agent" <${process.env.EMAIL}>`,
       to: receiverEmail,
       subject: "Ticket Updated On Behalf Of You",
+
       html: `
-        <p>Dear Customer,</p>
+  <p>Dear Customer,</p>
 
-<p>This is to inform you that your open ticket has been updated on your behalf by our Zoho AI Agent.</p>
+  <p>This is to inform you that your open ticket with id: <u>${answeredTicketId}</u> has been updated on your behalf by our Zoho AI Agent.</p>
 
-<p>Details of the update:</p>
-<ul>
-  <li><strong>Summary:</strong> ${ai.summary}</li>
-  <li><strong>Category:</strong> ${ai.category}</li>
-  <li><strong>Priority:</strong> ${ai.priority} (${ai.priority_reason ?? "n/a"})</li>
-  <li><strong>Tags:</strong> ${ai.tags?.join(", ") ?? "none"}</li>
-</ul>
+  <p>Details of the update:</p>
+  <ul>
+    <li><strong>Summary:</strong> ${ai.summary}</li>
+    <li><strong>Category:</strong> ${ai.category}</li>
+    <li><strong>Priority:</strong> ${ai.priority} (${ai.priority_reason ?? "n/a"})</li>
+    <li><strong>Tags:</strong> ${ai.tags?.join(", ") ?? "none"}</li>
+  </ul>
 
-<p>If you have any questions or need further assistance, please feel free to reach out.</p>
+  <h3>Similar Tickets</h3>
+  <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; text-align: left;">
+    <tr>
+      <th>Ticket ID</th>
+      <th>Similarity</th>
+    </tr>
+    ${similarTicketObject.map(t => `
+      <tr>
+        <td>${t.ticketId}</td>
+        <td>${(t.similarity * 100).toFixed(2)}%</td>
+      </tr>
+    `).join("")}
+  </table>
 
-<p>Best regards,<br>
-The Support Team (Zoho AI Agent)</p>
+  <p>If you have any questions or need further assistance, please feel free to reach out.</p>
 
-      `,
+  <p>Best regards,<br>
+  The Support Team (Zoho AI Agent)</p>
+`
+
     };
 
     const info = await transporter.sendMail(mailOptions);

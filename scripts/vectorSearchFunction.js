@@ -108,7 +108,7 @@ async function vectorSearch(ticketIdArg, TOP_K, NUM_CANDIDATES) {
     console.log("\n=== Vector Search (Atlas) ===");
     console.table(hits.map(pretty));
     console.log("hits", hits);
-
+    //hits is a object 
     return hits; // ✅ now this is returned to caller
   } catch (e) {
     const msg = e?.message || String(e);
