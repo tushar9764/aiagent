@@ -11,11 +11,13 @@ const TicketSchema = new mongoose.Schema(
     description: String,   // ← add this if you have it
     status: String,        // e.g. "open", "closed"
     priority: String,      // e.g. "low", "high"
+    site: String,
 
     client: { type: String },
     location:{ type: String},
     issue: { type: String},
     isp: { type: String },
+
 
     // normalized text used for hashing & embedding (subject + description, cleaned)
     normalizedText: { type: String, index: false },

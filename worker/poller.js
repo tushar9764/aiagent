@@ -111,7 +111,6 @@ export function startWorker(env) {
           });
           console.log(`[db] saved ${ticketId}`, ticketSaved);
           const similarTickets= await vectorSearch(ticketId, 10, 100);
-          
           // const similarTicketsId=similarTickets.map((m)=>m.ticketId);
           // console.log("similar tickets ids:", similarTicketsId);
 

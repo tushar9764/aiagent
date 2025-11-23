@@ -73,7 +73,7 @@ async function vectorSearch(ticketIdArg, TOP_K, NUM_CANDIDATES) {
     const windowEnd = new Date(anchor.updatedAt.getTime() + days * ms);
 
     const filter = {
-      site: anchor.site,
+      //site: anchor.site,   //future: change this to client, and NER should be trained properly
       updatedAt: { $gte: windowStart, $lte: windowEnd },
     };
     const pipe = [
